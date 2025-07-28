@@ -14,8 +14,8 @@ import type { JSX } from "react/jsx-runtime"
 interface TreeNode {
   value: number
   id: string
-  left?: TreeNode
-  right?: TreeNode
+  left: TreeNode | null
+  right: TreeNode | null
   x?: number
   y?: number
   isVisiting?: boolean
@@ -124,6 +124,8 @@ export default function TreeVisualizer() {
   const createNode = (value: number): TreeNode => ({
     value,
     id: `node-${value}-${Date.now()}`,
+    left: null,
+    right: null
   })
 
   // Insert node into BST
@@ -593,7 +595,9 @@ export default function TreeVisualizer() {
         const findNodeValue = (node: TreeNode | null): number | null => {
           if (!node) return null
           if (node.id === nodeId) return node.value
-          return findNodeValue(node.left) || findNodeValue(node.right)
+          const leftVal = findNodeValue(node.left)
+          if (leftVal !== null) return leftVal
+          return findNodeValue(node.right)
         }
         const value = findNodeValue(tree)
         if (value !== null) result.push(value)
